@@ -16,59 +16,51 @@
             --white: #e0e0e0;
             --orange: #d35400;
         }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg-deep); color: var(--white); height: 100vh; overflow: hidden; }
         
-        .layout { display: flex; height: 100vh; width: 100vw; }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-deep); color: var(--white); height: 100vh; }
 
-        /* SIDEBAR IDENTICA */
-        .sidebar { width: 260px; background: var(--bg-side); display: flex; flex-direction: column; border-right: 1px solid #1f2d33; }
-        .brand { padding: 25px; color: var(--teal); font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 12px; }
-        .nav-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
-        .nav-item { padding: 12px 25px; display: flex; align-items: center; gap: 15px; color: var(--text-muted); cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .layout { display: flex; height: 100vh; width: 100vw; flex-direction: row; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; background: var(--bg-side); display: flex; flex-direction: column; border-right: 1px solid #1f2d33; flex-shrink: 0; }
+        .brand { padding: 20px; color: var(--teal); font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 12px; }
+        .nav-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; overflow-y: auto; }
+        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; color: var(--text-muted); cursor: pointer; font-size: 14px; }
         .nav-item.active { background: rgba(47, 142, 139, 0.15); color: var(--teal); border-left: 4px solid var(--teal); }
-        .nav-item:hover { background: rgba(255,255,255,0.05); }
 
-        /* MAIN CONTENT AREA */
-        .main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        /* MAIN CONTENT */
+        .main { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+        header { background: var(--bg-side); padding: 0 20px; min-height: 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2d33; }
+        .top-tabs { display: flex; gap: 20px; height: 100%; align-items: center; overflow-x: auto; }
+        .tab { color: var(--text-muted); font-size: 13px; white-space: nowrap; cursor: pointer; }
+        .tab.active { color: var(--teal); border-bottom: 2px solid var(--teal); padding-bottom: 5px; }
+        .btn-logout { background: var(--orange); color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
+
+        /* GRID RESPONSIVO */
+        .dashboard-container { padding: 20px; flex-grow: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; align-content: start; }
+        .card { background: var(--bg-card); border-radius: 6px; padding: 15px; border: 1px solid #1f2d33; height: fit-content; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; }
         
-        header { background: var(--bg-side); padding: 0 25px; height: 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2d33; }
-        .top-tabs { display: flex; gap: 25px; height: 100%; align-items: center; }
-        .tab { color: var(--text-muted); font-size: 13px; cursor: pointer; height: 100%; display: flex; align-items: center; position: relative; }
-        .tab.active { color: var(--teal); }
-        .tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--teal); }
-        .btn-logout { background: var(--orange); color: white; border: none; padding: 6px 18px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .video-viewport { width: 100%; height: 250px; background: #000; border-radius: 4px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .video-viewport::before { content: 'LIVE'; position: absolute; top: 10px; left: 10px; background: red; padding: 2px 5px; font-size: 10px; border-radius: 2px; font-weight: bold; }
 
-        /* GRID DOS CARDS */
-        .dashboard-container { padding: 20px; flex-grow: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 20px; }
-        .card { background: var(--bg-card); border-radius: 6px; padding: 15px; border: 1px solid #1f2d33; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; color: var(--white); font-size: 14px; font-weight: 500; }
-        .card-header i { color: var(--text-muted); font-size: 12px; cursor: pointer; }
-        
-        .video-viewport { width: 100%; height: 220px; background: #000; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #333; position: relative; }
-        .video-viewport::before { content: 'LIVE'; position: absolute; top: 10px; left: 10px; background: #ff0000; color: white; font-size: 10px; padding: 2px 5px; border-radius: 2px; font-weight: bold; z-index: 2; }
+        .phone-frame { width: 140px; height: 260px; border: 4px solid #1f2d33; border-radius: 20px; margin: 10px auto; background: #0b1114; }
+        .map-static { width: 100%; height: 150px; background: #1a2a30; border-radius: 4px; margin-top: 10px; }
 
-        /* Cards específicos baixo */
-        .phone-frame { width: 120px; height: 220px; border: 4px solid #1f2d33; border-radius: 15px; background: #16262c; margin: 0 auto; position: relative; }
-        .map-static { width: 100%; height: 150px; background: #1a2a30; border-radius: 4px; margin-bottom: 10px; border: 1px solid #1f2d33; }
-        
-        .msg-feed { font-size: 12px; }
-        .msg-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: flex-start; }
-        .avatar { width: 32px; height: 32px; background: #2f8e8b; border-radius: 50%; flex-shrink: 0; }
-        .msg-info { flex-grow: 1; }
-        .msg-info b { font-size: 13px; color: var(--teal); }
-        .msg-info p { margin: 2px 0; color: var(--text-muted); }
-
-        /* FOOTER STATUS */
-        .footer { background: var(--bg-side); height: 50px; display: flex; align-items: center; padding: 0 25px; gap: 30px; border-top: 1px solid #1f2d33; font-size: 12px; color: var(--text-muted); }
+        /* FOOTER */
+        .footer { background: var(--bg-side); padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 20px; border-top: 1px solid #1f2d33; font-size: 12px; color: var(--text-muted); }
         .footer i { color: var(--teal); }
 
-        /* RESPONSIVIDADE MOBILE */
-        @media (max-width: 900px) {
-            .layout { flex-direction: column; overflow-y: auto; }
-            .sidebar { width: 100%; height: auto; }
-            .nav-list { display: none; }
-            .dashboard-container { grid-template-columns: 1fr; height: auto; overflow: visible; }
-            body, html { overflow-y: auto; height: auto; }
+        /* AJUSTES PARA CELULAR */
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #1f2d33; }
+            .nav-list { display: flex; overflow-x: auto; padding: 10px; }
+            .nav-item { padding: 8px 15px; white-space: nowrap; border-left: none !important; border-bottom: 2px solid transparent; }
+            .nav-item.active { background: none; border-bottom-color: var(--teal); }
+            .dashboard-container { grid-template-columns: 1fr; padding: 10px; }
+            .video-viewport { height: 200px; }
         }
     </style>
 </head>
@@ -78,57 +70,48 @@
             <div class="brand"><i class="fas fa-robot"></i> DroidGuard</div>
             <nav class="nav-list">
                 <div class="nav-item active"><i class="fas fa-th-large"></i> Painel Geral</div>
-                <div class="nav-item"><i class="fas fa-video"></i> Monitoramento da Câmera</div>
-                <div class="nav-item"><i class="fas fa-desktop"></i> Visualização de Tela</div>
-                <div class="nav-item"><i class="fas fa-map-marker-alt"></i> Localização GPS</div>
-                <div class="nav-item"><i class="fas fa-sms"></i> Registro de Mensagens</div>
-                <div class="nav-item"><i class="fas fa-history"></i> Histórico do Navegador</div>
-                <div class="nav-item"><i class="fas fa-file-invoice"></i> Acesso a Arquivos</div>
+                <div class="nav-item"><i class="fas fa-video"></i> Câmeras</div>
+                <div class="nav-item"><i class="fas fa-desktop"></i> Tela</div>
+                <div class="nav-item"><i class="fas fa-map-marker-alt"></i> GPS</div>
+                <div class="nav-item"><i class="fas fa-sms"></i> SMS</div>
             </nav>
         </aside>
 
         <main class="main">
             <header>
                 <div class="top-tabs">
-                    <div class="tab active"><i class="fas fa-home" style="margin-right:8px"></i>Início</div>
-                    <div class="tab"><i class="fas fa-mobile-alt" style="margin-right:8px"></i>Dispositivos</div>
-                    <div class="tab"><i class="fas fa-map" style="margin-right:8px"></i>Mapas</div>
+                    <div class="tab active">Início</div>
+                    <div class="tab">Dispositivos</div>
+                    <div class="tab">Mapas</div>
                 </div>
-                <button class="btn-logout"><i class="fas fa-sign-out-alt"></i>Sair</button>
+                <button class="btn-logout">Sair</button>
             </header>
 
             <div class="dashboard-container">
                 <div class="card">
-                    <div class="card-header">Câmera Frontal - Em Tempo Real <div><i class="fas fa-expand"></i> <i class="fas fa-ellipsis-h" style="margin-left:10px"></i></div></div>
-                    <div class="video-viewport">AGUARDANDO TERMUX...</div>
+                    <div class="card-header">Câmera Frontal - Tempo Real <i class="fas fa-ellipsis-h"></i></div>
+                    <div class="video-viewport">SEM SINAL</div>
                 </div>
                 <div class="card">
-                    <div class="card-header">Câmera Traseira - Em Tempo Real <div><i class="fas fa-expand"></i> <i class="fas fa-ellipsis-h" style="margin-left:10px"></i></div></div>
-                    <div class="video-viewport">AGUARDANDO TERMUX...</div>
+                    <div class="card-header">Câmera Traseira - Tempo Real <i class="fas fa-ellipsis-h"></i></div>
+                    <div class="video-viewport">SEM SINAL</div>
                 </div>
                 <div class="card">
-                    <div class="card-header">Visualização de Tela ao Vivo <div><i class="fas fa-ellipsis-h"></i></div></div>
-                    <div class="phone-frame">
-                         <div style="position:absolute; bottom:15px; left:50%; transform:translateX(-50%); width:30px; height:2px; background:#1f2d33"></div>
-                    </div>
+                    <div class="card-header">Visualização de Tela ao Vivo</div>
+                    <div class="phone-frame"></div>
                 </div>
                 <div class="card">
-                    <div class="card-header">Localização GPS Recente <div><i class="fas fa-ellipsis-h"></i></div></div>
+                    <div class="card-header">Localização GPS</div>
                     <div class="map-static"></div>
-                    <div class="card-header" style="margin-top:15px">Últimas Mensagens <div><i class="fas fa-ellipsis-h"></i></div></div>
-                    <div class="msg-feed">
-                        <div class="msg-row">
-                            <div class="avatar"></div>
-                            <div class="msg-info"><b>Aman</b><p>Mensagem recebida do sistema...</p></div>
-                        </div>
-                    </div>
+                    <div class="card-header" style="margin-top:15px">Mensagens</div>
+                    <div style="font-size:12px; color:var(--teal)">Aguardando logs...</div>
                 </div>
             </div>
 
             <footer class="footer">
-                <span><i class="fas fa-redo"></i> Última Atualização: 5 min atrás</span>
+                <span><i class="fas fa-redo"></i> Atualizado: Agora</span>
                 <span><i class="fas fa-battery-three-quarters"></i> Bateria: 85%</span>
-                <span><i class="fas fa-wifi"></i> Conexão: WI-FI</span>
+                <span><i class="fas fa-wifi"></i> WI-FI</span>
             </footer>
         </main>
     </div>
