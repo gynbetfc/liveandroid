@@ -3,51 +3,54 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidGuard Pro - Monitor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DroidGuard Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --bg: #0d1418; --side: #1a2a30; --card: #16262c; --teal: #2f8e8b; --text: #889ba3; --white: #e0e0e0; }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--white); height: 100vh; overflow: hidden; }
+        :root { --bg: #080c0e; --side: #111b1f; --card: #16262c; --teal: #2f8e8b; --accent: #4fd1c5; --white: #e2e8f0; --text-muted: #718096; }
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--white); height: 100vh; overflow: hidden; }
         .layout { display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: var(--side); border-right: 1px solid #1f2d33; }
-        .main { flex-grow: 1; display: flex; flex-direction: column; }
-        header { background: var(--side); padding: 15px 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #1f2d33; }
-        .dashboard { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; overflow-y: auto; }
-        .card { background: var(--card); border-radius: 8px; padding: 15px; border: 1px solid #1f2d33; }
-        #map { width: 100%; height: 250px; border-radius: 6px; }
-        .stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: var(--text); }
-        .stat-value { color: var(--teal); font-weight: bold; }
+        .sidebar { width: 60px; background: var(--side); display: flex; flex-direction: column; align-items: center; padding: 20px 0; border-right: 1px solid #1f2d33; }
+        .logo-icon { color: var(--teal); font-size: 24px; margin-bottom: 40px; }
+        .nav-item { color: var(--text-muted); font-size: 20px; margin-bottom: 30px; }
+        .nav-item.active { color: var(--teal); }
+        .main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        header { background: var(--side); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2d33; }
+        .header-title { font-size: 14px; font-weight: 700; color: var(--teal); }
+        .net-status { font-size: 10px; color: var(--accent); border: 1px solid var(--teal); padding: 2px 8px; border-radius: 10px; }
+        .dashboard { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; overflow-y: auto; }
+        .card { background: var(--card); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .card h3 { margin: 0 0 12px 0; font-size: 10px; text-transform: uppercase; color: var(--text-muted); letter-spacing: 1px; }
+        #map { width: 100%; height: 180px; border-radius: 8px; }
+        .data-grid { display: grid; gap: 8px; }
+        .data-item { display: flex; justify-content: space-between; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; }
+        .val { color: var(--accent); font-weight: bold; }
+        .cam-box { height: 120px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #333; }
+        @media (max-width: 600px) { .dashboard { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="layout">
-        <aside class="sidebar">
-            <div style="padding:20px; color:var(--teal); font-weight:bold; font-size:20px;"><i class="fas fa-user-secret"></i> DroidGuard</div>
-        </aside>
+        <aside class="sidebar"><div class="logo-icon"><i class="fas fa-ghost"></i></div><div class="nav-item active"><i class="fas fa-th-large"></i></div></aside>
         <main class="main">
-            <header>
-                <div id="net-display" style="color:var(--teal); font-size:12px;">● VERIFICANDO REDE...</div>
-                <div style="background:#d35400; padding:5px 15px; border-radius:4px; font-size:12px; cursor:pointer;">SAIR</div>
-            </header>
+            <header><div class="header-title">DROIDGUARD PRO</div><div id="net-display" class="net-status">ONLINE</div></header>
             <div class="dashboard">
                 <div class="card">
-                    <h3>Status do Dispositivo</h3>
-                    <div class="stat-row"><span>Bateria:</span> <span id="bat-val" class="stat-value">--%</span></div>
-                    <div class="stat-row"><span>Temperatura:</span> <span id="temp-val" class="stat-value">--°C</span></div>
-                    <div class="stat-row"><span>Estado:</span> <span id="status-val" class="stat-value">--</span></div>
+                    <h3><i class="fas fa-bolt"></i> Energia</h3>
+                    <div class="data-grid">
+                        <div class="data-item"><span>Bateria</span><span id="bat-val" class="val">--%</span></div>
+                        <div class="data-item"><span>Temp</span><span id="temp-val" class="val">--°C</span></div>
+                        <div class="data-item"><span>Status</span><span id="status-val" class="val">--</span></div>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Localização GPS</h3>
-                    <div id="map"></div>
-                </div>
-                <div class="card"><h3>Câmera Frontal</h3><div style="height:150px; background:#000; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#333;">OFFLINE</div></div>
-                <div class="card"><h3>Câmera Traseira</h3><div style="height:150px; background:#000; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#333;">OFFLINE</div></div>
+                <div class="card"><h3><i class="fas fa-location-arrow"></i> GPS Live</h3><div id="map"></div></div>
+                <div class="card"><h3>Câmera Frontal</h3><div class="cam-box">STANDBY</div></div>
+                <div class="card"><h3>Câmera Traseira</h3><div class="cam-box">STANDBY</div></div>
             </div>
         </main>
     </div>
-
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -55,22 +58,18 @@
         const conf = { databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(conf);
         const db = firebase.database().ref('device_status');
-
-        const map = L.map('map').setView([-16.6869, -49.2648], 15);
+        const map = L.map('map', {zoomControl: false}).setView([-16.6869, -49.2648], 15);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let marker = L.marker([-16.6869, -49.2648]).addTo(map);
+        let marker = L.circleMarker([-16.6869, -49.2648], {color: '#2f8e8b', radius: 7}).addTo(map);
 
         db.on('value', (s) => {
             const d = s.val();
             if(d) {
-                if(d.lat && d.lon) {
-                    marker.setLatLng([d.lat, d.lon]);
-                    map.panTo([d.lat, d.lon]);
-                }
+                if(d.lat && d.lon) { marker.setLatLng([d.lat, d.lon]); map.panTo([d.lat, d.lon]); }
                 document.getElementById('bat-val').innerText = d.battery_level + '%';
                 document.getElementById('temp-val').innerText = d.temp + '°C';
-                document.getElementById('status-val').innerText = d.battery_status;
-                document.getElementById('net-display').innerText = '● ' + d.network.toUpperCase();
+                document.getElementById('status-val').innerText = d.battery_status.toUpperCase();
+                document.getElementById('net-display').innerText = d.network.toUpperCase();
             }
         });
     </script>
