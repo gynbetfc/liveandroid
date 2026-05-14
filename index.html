@@ -4,116 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidGuard - Painel de Controle</title>
+    <title>DroidGuard - GPS Realtime</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root {
-            --bg-deep: #0b1114;
-            --bg-side: #16262c;
-            --bg-card: #121d22;
-            --teal: #2f8e8b;
-            --text-muted: #889ba3;
-            --white: #e0e0e0;
-            --orange: #d35400;
-        }
-        
-        * { box-sizing: border-box; }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-deep); color: var(--white); height: 100vh; }
-
-        .layout { display: flex; height: 100vh; width: 100vw; flex-direction: row; }
-
-        /* SIDEBAR */
-        .sidebar { width: 260px; background: var(--bg-side); display: flex; flex-direction: column; border-right: 1px solid #1f2d33; flex-shrink: 0; }
-        .brand { padding: 20px; color: var(--teal); font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 12px; }
-        .nav-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; overflow-y: auto; }
-        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; color: var(--text-muted); cursor: pointer; font-size: 14px; }
-        .nav-item.active { background: rgba(47, 142, 139, 0.15); color: var(--teal); border-left: 4px solid var(--teal); }
-
-        /* MAIN CONTENT */
-        .main { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
-        header { background: var(--bg-side); padding: 0 20px; min-height: 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2d33; }
-        .top-tabs { display: flex; gap: 20px; height: 100%; align-items: center; overflow-x: auto; }
-        .tab { color: var(--text-muted); font-size: 13px; white-space: nowrap; cursor: pointer; }
-        .tab.active { color: var(--teal); border-bottom: 2px solid var(--teal); padding-bottom: 5px; }
-        .btn-logout { background: var(--orange); color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; flex-shrink: 0; }
-
-        /* GRID RESPONSIVO */
-        .dashboard-container { padding: 20px; flex-grow: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; align-content: start; }
-        .card { background: var(--bg-card); border-radius: 6px; padding: 15px; border: 1px solid #1f2d33; height: fit-content; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; }
-        
-        .video-viewport { width: 100%; height: 250px; background: #000; border-radius: 4px; display: flex; align-items: center; justify-content: center; position: relative; }
-        .video-viewport::before { content: 'LIVE'; position: absolute; top: 10px; left: 10px; background: red; padding: 2px 5px; font-size: 10px; border-radius: 2px; font-weight: bold; }
-
-        .phone-frame { width: 140px; height: 260px; border: 4px solid #1f2d33; border-radius: 20px; margin: 10px auto; background: #0b1114; }
-        .map-static { width: 100%; height: 150px; background: #1a2a30; border-radius: 4px; margin-top: 10px; }
-
-        /* FOOTER */
-        .footer { background: var(--bg-side); padding: 10px 20px; display: flex; flex-wrap: wrap; gap: 20px; border-top: 1px solid #1f2d33; font-size: 12px; color: var(--text-muted); }
-        .footer i { color: var(--teal); }
-
-        /* AJUSTES PARA CELULAR */
-        @media (max-width: 768px) {
-            .layout { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #1f2d33; }
-            .nav-list { display: flex; overflow-x: auto; padding: 10px; }
-            .nav-item { padding: 8px 15px; white-space: nowrap; border-left: none !important; border-bottom: 2px solid transparent; }
-            .nav-item.active { background: none; border-bottom-color: var(--teal); }
-            .dashboard-container { grid-template-columns: 1fr; padding: 10px; }
-            .video-viewport { height: 200px; }
-        }
+        :root { --bg: #0b1114; --side: #16262c; --card: #121d22; --teal: #2f8e8b; --white: #e0e0e0; }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--white); height: 100vh; overflow: hidden; }
+        .layout { display: flex; height: 100vh; flex-direction: column; }
+        header { background: var(--side); padding: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #1f2d33; }
+        #map { width: 100%; flex-grow: 1; }
+        .status-bar { background: var(--side); padding: 10px; display: flex; justify-content: space-around; font-size: 12px; border-top: 1px solid #1f2d33; }
+        .status-bar i { color: var(--teal); margin-right: 5px; }
     </style>
 </head>
 <body>
     <div class="layout">
-        <aside class="sidebar">
-            <div class="brand"><i class="fas fa-robot"></i> DroidGuard</div>
-            <nav class="nav-list">
-                <div class="nav-item active"><i class="fas fa-th-large"></i> Painel Geral</div>
-                <div class="nav-item"><i class="fas fa-video"></i> Câmeras</div>
-                <div class="nav-item"><i class="fas fa-desktop"></i> Tela</div>
-                <div class="nav-item"><i class="fas fa-map-marker-alt"></i> GPS</div>
-                <div class="nav-item"><i class="fas fa-sms"></i> SMS</div>
-            </nav>
-        </aside>
-
-        <main class="main">
-            <header>
-                <div class="top-tabs">
-                    <div class="tab active">Início</div>
-                    <div class="tab">Dispositivos</div>
-                    <div class="tab">Mapas</div>
-                </div>
-                <button class="btn-logout">Sair</button>
-            </header>
-
-            <div class="dashboard-container">
-                <div class="card">
-                    <div class="card-header">Câmera Frontal - Tempo Real <i class="fas fa-ellipsis-h"></i></div>
-                    <div class="video-viewport">SEM SINAL</div>
-                </div>
-                <div class="card">
-                    <div class="card-header">Câmera Traseira - Tempo Real <i class="fas fa-ellipsis-h"></i></div>
-                    <div class="video-viewport">SEM SINAL</div>
-                </div>
-                <div class="card">
-                    <div class="card-header">Visualização de Tela ao Vivo</div>
-                    <div class="phone-frame"></div>
-                </div>
-                <div class="card">
-                    <div class="card-header">Localização GPS</div>
-                    <div class="map-static"></div>
-                    <div class="card-header" style="margin-top:15px">Mensagens</div>
-                    <div style="font-size:12px; color:var(--teal)">Aguardando logs...</div>
-                </div>
-            </div>
-
-            <footer class="footer">
-                <span><i class="fas fa-redo"></i> Atualizado: Agora</span>
-                <span><i class="fas fa-battery-three-quarters"></i> Bateria: 85%</span>
-                <span><i class="fas fa-wifi"></i> WI-FI</span>
-            </footer>
-        </main>
+        <header>
+            <div style="color:var(--teal); font-weight:bold;"><i class="fas fa-satellite"></i> DROIDGUARD GPS</div>
+            <div id="connection" style="color:#00ff00; font-size:10px;">● CONECTADO</div>
+        </header>
+        <div id="map"></div>
+        <div class="status-bar">
+            <span id="bat-val"><i class="fas fa-battery-three-quarters"></i> --%</span>
+            <span id="pos-val"><i class="fas fa-crosshairs"></i> Aguardando sinal...</span>
+        </div>
     </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = { databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref('gps');
+
+        const map = L.map('map').setView([-16.6869, -49.2648], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        let marker = L.marker([-16.6869, -49.2648]).addTo(map);
+
+        db.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const pos = [data.lat, data.lon];
+                marker.setLatLng(pos);
+                map.panTo(pos);
+                document.getElementById('bat-val').innerHTML = `<i class="fas fa-battery-bolt"></i> ${data.battery}%`;
+                document.getElementById('pos-val').innerHTML = `<i class="fas fa-map-marker"></i> ${data.lat.toFixed(5)}, ${data.lon.toFixed(5)}`;
+            }
+        });
+    </script>
 </body>
 </html>
