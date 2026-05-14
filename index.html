@@ -4,30 +4,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidGuard - GPS Realtime</title>
+    <title>DroidGuard - Painel de Controle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --bg: #0b1114; --side: #16262c; --card: #121d22; --teal: #2f8e8b; --white: #e0e0e0; }
-        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--white); height: 100vh; overflow: hidden; }
-        .layout { display: flex; height: 100vh; flex-direction: column; }
-        header { background: var(--side); padding: 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #1f2d33; }
-        #map { width: 100%; flex-grow: 1; }
-        .status-bar { background: var(--side); padding: 10px; display: flex; justify-content: space-around; font-size: 12px; border-top: 1px solid #1f2d33; }
-        .status-bar i { color: var(--teal); margin-right: 5px; }
+        :root {
+            --bg-body: #0d1418;
+            --bg-sidebar: #1a2a30;
+            --bg-card: #16262c;
+            --teal: #2f8e8b;
+            --text-gray: #889ba3;
+            --white: #e0e0e0;
+            --orange: #d35400;
+        }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg-body); color: var(--white); height: 100vh; overflow: hidden; }
+        .layout { display: flex; height: 100vh; width: 100vw; }
+
+        /* SIDEBAR RESTAURADA */
+        .sidebar { width: 260px; background: var(--bg-sidebar); display: flex; flex-direction: column; border-right: 1px solid #1f2d33; flex-shrink: 0; }
+        .logo { padding: 20px; color: var(--teal); font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 12px; justify-content: center; }
+        .nav-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .nav-item { padding: 12px 20px; display: flex; align-items: center; gap: 15px; color: var(--text-gray); font-size: 14px; cursor: pointer; }
+        .nav-item.active { background: rgba(47, 142, 139, 0.15); color: var(--teal); border-left: 4px solid var(--teal); }
+
+        /* MAIN CONTENT */
+        .main { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+        header { background: var(--bg-sidebar); padding: 0 20px; min-height: 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2d33; }
+        .btn-exit { background: var(--orange); color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
+
+        /* DASHBOARD GRID - IGUAL À FOTO DE REFERÊNCIA */
+        .dashboard-container { padding: 20px; flex-grow: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-content: start; }
+        .card { background: var(--bg-card); border-radius: 8px; padding: 15px; border: 1px solid #1f2d33; }
+        .card h3 { margin: 0 0 10px 0; font-size: 13px; color: var(--text-gray); text-transform: uppercase; border-bottom: 1px solid #1f2d33; padding-bottom: 5px; }
+        
+        /* Câmeras e Tela */
+        .video-viewport { width: 100%; height: 220px; background: #000; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #444; position: relative; }
+        .video-viewport::before { content: 'LIVE'; position: absolute; top: 8px; left: 8px; background: red; padding: 2px 5px; font-size: 9px; border-radius: 2px; font-weight: bold; color: white; }
+        
+        .phone-frame { width: 140px; height: 280px; border: 4px solid #1f2d33; border-radius: 20px; margin: 0 auto; background: #0b1114; position: relative; }
+        
+        /* GPS Mover para dentro do CARD */
+        #map { width: 100%; height: 250px; border-radius: 6px; background: #000; border: 1px solid #111; }
+
+        /* STATUS BAR SUPERIOR */
+        .online-tag { color: var(--teal); font-weight: bold; font-size: 12px; display: flex; align-items: center; gap: 5px; }
+        .online-tag::before { content: '●'; color: #00ff00; }
+
+        /* RESPONSIVIDADE MOBILE */
+        @media (max-width: 768px) {
+            .layout { flex-direction: column; overflow-y: auto; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #1f2d33; }
+            .logo { padding: 10px; font-size: 18px; }
+            .nav-list { display: flex; overflow-x: auto; padding: 10px; gap: 5px; }
+            .nav-item { padding: 8px 15px; white-space: nowrap; border-left: none !important; border-bottom: 2px solid transparent; font-size: 12px; }
+            .nav-item.active { background: none; border-bottom-color: var(--teal); color: var(--teal); }
+            .dashboard-container { grid-template-columns: 1fr; padding: 10px; }
+            body, html { overflow-y: auto; height: auto; }
+        }
     </style>
 </head>
 <body>
     <div class="layout">
-        <header>
-            <div style="color:var(--teal); font-weight:bold;"><i class="fas fa-satellite"></i> DROIDGUARD GPS</div>
-            <div id="connection" style="color:#00ff00; font-size:10px;">● CONECTADO</div>
-        </header>
-        <div id="map"></div>
-        <div class="status-bar">
-            <span id="bat-val"><i class="fas fa-battery-three-quarters"></i> --%</span>
-            <span id="pos-val"><i class="fas fa-crosshairs"></i> Aguardando sinal...</span>
-        </div>
+        <aside class="sidebar">
+            <div class="logo"><i class="fas fa-user-secret"></i> DroidGuard</div>
+            <nav>
+                <ul class="nav-list">
+                    <li class="nav-item active"><i class="fas fa-home"></i> Painel Geral</li>
+                    <li class="nav-item"><i class="fas fa-camera"></i> Câmeras</li>
+                    <li class="nav-item"><i class="fas fa-desktop"></i> Tela</li>
+                    <li class="nav-item"><i class="fas fa-map-marker-alt"></i> GPS Ativo</li>
+                    <li class="nav-item"><i class="fas fa-comments"></i> Mensagens</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main">
+            <header>
+                <div class="online-tag">SISTEMA ONLINE (FIREBASE)</div>
+                <button class="btn-exit">Sair</button>
+            </header>
+
+            <div class="dashboard-container">
+                <div class="card">
+                    <h3>Câmera Frontal - Tempo Real <i class="fas fa-ellipsis-h" style="float:right"></i></h3>
+                    <div class="video-viewport">AGUARDANDO TERMUX...</div>
+                </div>
+                <div class="card">
+                    <h3>Câmera Traseira - Tempo Real <i class="fas fa-ellipsis-h" style="float:right"></i></h3>
+                    <div class="video-viewport">AGUARDANDO TERMUX...</div>
+                </div>
+                <div class="card">
+                    <h3>Visualização de Tela</h3>
+                    <div class="phone-frame"></div>
+                </div>
+                <div class="card">
+                    <h3>Localização GPS Recente (Live) <i class="fas fa-crosshairs" style="float:right; color:var(--teal)"></i></h3>
+                    <div id="map"></div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -39,18 +114,18 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database().ref('gps');
 
+        // Inicializa o mapa dentro da div #map
         const map = L.map('map').setView([-16.6869, -49.2648], 16);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let marker = L.marker([-16.6869, -49.2648]).addTo(map);
+        let marker = L.marker([-16.6869, -49.2648]).addTo(map).bindPopup('Dispositivo').openPopup();
 
+        // Escuta o Firebase em tempo real e move o marcador
         db.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 const pos = [data.lat, data.lon];
                 marker.setLatLng(pos);
                 map.panTo(pos);
-                document.getElementById('bat-val').innerHTML = `<i class="fas fa-battery-bolt"></i> ${data.battery}%`;
-                document.getElementById('pos-val').innerHTML = `<i class="fas fa-map-marker"></i> ${data.lat.toFixed(5)}, ${data.lon.toFixed(5)}`;
             }
         });
     </script>
