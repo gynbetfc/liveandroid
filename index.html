@@ -4,60 +4,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidGuard Pro</title>
+    <title>DroidGuard Pro - Engenharia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        :root { --bg: #080c0e; --side: #111b1f; --card: #16262c; --teal: #2f8e8b; --white: #e2e8f0; }
-        body { margin: 0; font-family: sans-serif; background: var(--bg); color: var(--white); display: flex; height: 100vh; }
-        .sidebar { width: 60px; background: var(--side); border-right: 1px solid #1f2d33; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
-        .main { flex-grow: 1; display: flex; flex-direction: column; padding: 15px; overflow-y: auto; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border-radius: 12px; padding: 15px; border: 1px solid #1f2d33; }
-        #map { height: 200px; border-radius: 8px; }
-        .photo-box { width: 100%; height: 250px; background: #000; border-radius: 8px; object-fit: contain; border: 1px solid var(--teal); }
-        .status-text { font-size: 13px; color: var(--teal); font-weight: bold; margin-bottom: 10px; }
+        body { font-family: sans-serif; background: #080c0e; color: white; margin: 0; padding: 10px; }
+        .section { background: #16262c; border: 1px solid #333; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        h3 { margin-top: 0; color: #2f8e8b; border-bottom: 1px solid #222; padding-bottom: 5px; }
+        
+        /* Controles */
+        input, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 4px; border: none; }
+        input { background: #000; color: #0f0; border: 1px solid #2f8e8b; }
+        button { cursor: pointer; font-weight: bold; background: #2f8e8b; color: white; }
+        .btn-red { background: #900; }
+        
+        /* Dados */
+        #map { height: 200px; background: #000; border-radius: 5px; }
+        img { width: 100%; border-radius: 5px; background: #000; margin-top: 5px; }
+        .stats { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; background: #000; padding: 10px; border-radius: 5px; }
     </style>
 </head>
 <body>
-    <div class="sidebar"><i class="fas fa-ghost" style="color:var(--teal); font-size:24px;"></i></div>
-    <div class="main">
-        <div class="status-text">DROIDGUARD PRO // <span id="net">ONLINE</span></div>
-        <div class="grid">
-            <div class="card">
-                <h3><i class="fas fa-camera"></i> Última Captura</h3>
-                <img id="cam-img" class="photo-box" src="">
-            </div>
-            <div class="card">
-                <h3><i class="fas fa-map-marker-alt"></i> Localização</h3>
-                <div id="map"></div>
-            </div>
-            <div class="card">
-                <h3><i class="fas fa-battery-half"></i> Energia</h3>
-                <p>Bateria: <span id="bat" style="color:var(--teal)">--</span></p>
-                <p>Temp: <span id="temp" style="color:var(--teal)">--</span></p>
-            </div>
+
+    <h3>🛡️ DROIDGUARD - MODO FUNCIONAL</h3>
+
+    <div class="section">
+        <div class="stats">
+            <span>🔋 BATERIA: <span id="bat">--</span>%</span>
+            <span>📍 GPS: <span id="gps-status">OFF</span></span>
         </div>
+        <div id="map"></div>
     </div>
+
+    <div class="section">
+        <h3>📸 ÚLTIMA CAPTURA</h3>
+        <img id="foto" src="">
+    </div>
+
+    <div class="section">
+        <h3>🕹️ COMANDOS REMOTOS</h3>
+        <input type="text" id="voz-txt" placeholder="Texto para o celular falar...">
+        <button onclick="enviar('speak', document.getElementById('voz-txt').value)">🗣️ FALAR TEXTO</button>
+        <button onclick="enviar('vibrate')">📳 VIBRAR CELULAR</button>
+        <button class="btn-red" onclick="enviar('record', '10')">🎙️ GRAVAR ÁUDIO (10s)</button>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
     <script>
-        const conf = { databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(conf);
-        const db = firebase.database().ref('device_status');
-        const map = L.map('map', {zoomControl:false}).setView([-16.68, -49.26], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let marker = L.circleMarker([0,0], {color: '#2f8e8b', radius: 8}).addTo(map);
+        firebase.initializeApp({ databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/" });
+        const db = firebase.database();
 
-        db.on('value', (s) => {
+        // Enviar Comando
+        function enviar(action, val = "") {
+            db.ref('commands').set({ action: action, value: val });
+            console.log("Comando enviado: " + action);
+        }
+
+        // Mapa
+        const map = L.map('map').setView([0, 0], 2);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        let marker = L.circleMarker([0, 0], {color: 'cyan', radius: 8}).addTo(map);
+
+        // Receber Dados
+        db.ref('device_status').on('value', (s) => {
             const d = s.val();
             if(d) {
-                if(d.lat) { marker.setLatLng([d.lat, d.lon]); map.panTo([d.lat, d.lon]); }
-                if(d.photo) { document.getElementById('cam-img').src = "data:image/jpeg;base64," + d.photo; }
-                document.getElementById('bat').innerText = (d.battery_level || '--') + '%';
-                document.getElementById('temp').innerText = (d.temp || '--') + '°C';
-                document.getElementById('net').innerText = (d.network || 'OFFLINE').toUpperCase();
+                document.getElementById('bat').innerText = d.battery_level || '--';
+                if(d.lat) {
+                    const pos = [d.lat, d.lon];
+                    marker.setLatLng(pos);
+                    map.setView(pos, 15);
+                    document.getElementById('gps-status').innerText = "ON";
+                }
+                if(d.photo) {
+                    document.getElementById('foto').src = "data:image/jpeg;base64," + d.photo;
+                }
             }
         });
     </script>
