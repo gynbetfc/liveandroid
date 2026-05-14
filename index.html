@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DroidGuard - Painel de Controle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #121d22;
+            --sidebar-color: #1a2a30;
+            --card-bg: #1e333a;
+            --accent-teal: #2f8e8b;
+            --text-main: #e0e0e0;
+            --btn-orange: #d35400;
+        }
+        body, html { margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); color: var(--text-main); height: 100%; }
+        .container { display: flex; height: 100vh; }
+        
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--sidebar-color); padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.3); }
+        .sidebar h2 { color: var(--accent-teal); font-size: 22px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .sidebar nav ul { list-style: none; padding: 0; }
+        .sidebar nav ul li { padding: 15px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; }
+        .sidebar nav ul li:hover, .sidebar nav ul li.active { background: var(--accent-teal); color: white; }
+
+        /* Main Content */
+        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; }
+        header { background: #16262c; padding: 10px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a3f47; }
+        .tabs button { background: none; border: none; color: #889ba3; padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tabs button.active { color: var(--accent-teal); border-bottom-color: var(--accent-teal); }
+        .btn-exit { background: var(--btn-orange); color: white; border: none; padding: 8px 20px; border-radius: 5px; cursor: pointer; }
+
+        /* Dashboard Grid */
+        .dashboard { padding: 25px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 15px; border: 1px solid #2a3f47; }
+        .card h3 { margin-top: 0; font-size: 14px; color: #889ba3; text-transform: uppercase; letter-spacing: 1px; }
+        .video-box { width: 100%; height: 250px; background: #000; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #444; position: relative; overflow: hidden; }
+        .video-box::after { content: 'LIVE'; position: absolute; top: 10px; left: 10px; background: red; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; font-weight: bold; }
+        
+        /* Stats Footer */
+        .footer-stats { padding: 15px 30px; background: #16262c; border-top: 1px solid #2a3f47; display: flex; gap: 30px; font-size: 13px; color: #889ba3; }
+        .stat-item i { color: var(--accent-teal); margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <h2><i class="fas fa-robot"></i> DroidGuard</h2>
+            <nav>
+                <ul>
+                    <li class="active"><i class="fas fa-chart-line"></i> Painel Geral</li>
+                    <li><i class="fas fa-camera"></i> Câmeras</li>
+                    <li><i class="fas fa-mobile-alt"></i> Tela ao Vivo</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Localização</li>
+                    <li><i class="fas fa-envelope"></i> Mensagens</li>
+                    <li><i class="fas fa-folder-open"></i> Arquivos</li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main">
+            <header>
+                <div class="tabs">
+                    <button class="active">INÍCIO</button>
+                    <button>DISPOSITIVOS</button>
+                    <button>MAPAS</button>
+                </div>
+                <button class="btn-exit">Sair</button>
+            </header>
+            <div class="dashboard">
+                <div class="card">
+                    <h3>Câmera Frontal</h3>
+                    <div class="video-box" id="cam-front">AGUARDANDO STREAM PYTHON/TERMUX...</div>
+                </div>
+                <div class="card">
+                    <h3>Câmera Traseira</h3>
+                    <div class="video-box" id="cam-back">AGUARDANDO STREAM PYTHON/TERMUX...</div>
+                </div>
+                <div class="card">
+                    <h3>Visualização de Tela</h3>
+                    <div class="video-box" style="height: 350px;">Aguardando ScreenShare...</div>
+                </div>
+                <div class="card">
+                    <h3>Últimas Mensagens</h3>
+                    <div style="color: #666; font-style: italic;">Nenhum log de mensagem recebido ainda.</div>
+                </div>
+            </div>
+            <footer class="footer-stats">
+                <div class="stat-item"><i class="fas fa-sync-alt"></i> Atualizado: Agora</div>
+                <div class="stat-item"><i class="fas fa-battery-three-quarters"></i> Bateria: --%</div>
+                <div class="stat-item"><i class="fas fa-wifi"></i> Conexão: Pendente</div>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
